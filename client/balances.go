@@ -28,7 +28,7 @@ func sudtBalanceExtractor(cell *indexer.LiveCell) *big.Int {
 	return new(big.Int).SetUint64(binary.LittleEndian.Uint64(cell.OutputData))
 }
 
-func (p *PaymentClient) PollBalances() {
+func (p *WalletClient) PollBalances() {
 	defer log.Println("PollBalances: stopped")
 	pollingInterval := time.Second
 	searchKey := &indexer.SearchKey{

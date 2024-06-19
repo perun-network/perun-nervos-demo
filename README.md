@@ -1,8 +1,8 @@
-<h1 align="center"><br>
+<h1 align="center" style="background-color: #f0f0f0;"><br>
     <a href="https://perun.network/"><img src=".assets/go-perun.png" alt="Perun" width="196"></a>
 <br></h1>
 
-<h2 align="center">Perun CKB Demo</h2>
+<h2 align="center">PERUN NERVOS DEMO</h2>
 
 This repository contains the CKB demo client, which utilizes the [go-perun](https://github.com/perun-network/go-perun) channel library.
 
@@ -31,23 +31,23 @@ We use various tools to enable a convenient setup for the local development test
 Clone this repository:
 
 ```
-  $ git clone git@github.com:perun-network/perun-ckb-demo
+  $ git clone git@github.com:perun-network/perun-nervos-demo
 ```
 
 Initiliaze `git` submodules and make sure all dependencies are installed.
 
 ```
-  $ cd perun-ckb-demo
+  $ cd perun-nervos-demo
   $ git submodule update --init --recursive
 ```
 
 Build the demo client:
 
 ```
-  $ go build -o perun-ckb-demo
+  $ go build -o perun-nervos-demo
 ```
 
-Spin up the local testnet. For this change to the `perun-ckb-demo/devnet` directory and issue the `make dev` command.
+Spin up the local testnet. For this change to the `perun-nervos-demo/devnet` directory and issue the `make dev` command.
 **NOTE**: Make sure you are in a terminal that is not already running within `tmux`. `make dev` will use this terminal window and create a `tmux` session.
 
 ```
@@ -59,19 +59,28 @@ Spin up the local testnet. For this change to the `perun-ckb-demo/devnet` direct
 
 Wait for ~15 seconds. This is the time it takes for the devnet setup to be completed (deployed all contracts, funded testnet accounts etc.).
 
-# Using the demo
-
-If you are comfortable using `tmux` you can of course use the `devnet` session, otherwise in a **new terminal window** start the `perun-ckb-demo`.
-**NOTE**: Make sure you are in the root directory of the `perun-ckb-demo` repository.
+Run the channel-service servers on another terminal:
 
 ```
-  $ cd perun-ckb-demo/
-  $ ./perun-ckb-demo
+  $ cd ./channel_service
+  go run .
+```
+
+
+# Using The Demo
+
+If you are comfortable using `tmux` you can of course use the `devnet` session, otherwise in a **new terminal window** start the `perun-nervos-demo`.
+**NOTE**: Make sure you are in the root directory of the `perun-nervos-demo` repository.
+
+```
+  $ cd perun-nervos-demo/
+  $ ./perun-nervos-demo
 ```
 
 You will be greeted with a demo window that is split into two panes:
 
 ![demo-window](./.assets/00_demo_start.png)
+
 
 ## Keybinds
 

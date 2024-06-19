@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"perun.network/perun-ckb-demo/deployment"
+	"perun.network/perun-nervos-demo/deployment"
 )
 
 func TestSystemScripts(t *testing.T) {

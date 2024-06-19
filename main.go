@@ -2,25 +2,30 @@ package main
 
 import (
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
+	"time"
+
+	"polycry.pt/poly-go/sync"
 
 	"github.com/nervosnetwork/ckb-sdk-go/v2/types"
 	"perun.network/go-perun/channel"
+	gpwallet "perun.network/go-perun/wallet"
 	"perun.network/perun-ckb-backend/channel/asset"
-	"perun.network/perun-ckb-backend/transaction"
 	"perun.network/perun-ckb-backend/wallet"
-	"perun.network/perun-ckb-demo/client"
-	"perun.network/perun-ckb-demo/deployment"
 	vc "perun.network/perun-demo-tui/client"
 	"perun.network/perun-demo-tui/view"
+	"perun.network/perun-nervos-demo/client"
+	"perun.network/perun-nervos-demo/deployment"
 )
 
 const (
 	rpcNodeURL = "http://localhost:8114"
-	Network    = types.NetworkTest
+	network    = types.NetworkTest
+	aliceWSURL = "localhost:50051"
+	bobWSURL   = "localhost:50052"
+	aliceCSURL = "localhost:4321"
+	bobCSURL   = "localhost:4322"
 )
 
 func SetLogFile(path string) {
@@ -49,7 +54,7 @@ func (a AssetRegister) GetAllAssets() []channel.Asset {
 	return a.assets
 }
 
-func NewAssetRegister(assets []channel.Asset, names []string) (*AssetRegister, error) {
+func newAssetRegister(assets []channel.Asset, names []string) (*AssetRegister, error) {
 	assetRegister := &AssetRegister{
 		getName:  make(map[channel.Asset]string),
 		getAsset: make(map[string]channel.Asset),
@@ -79,29 +84,13 @@ func NewAssetRegister(assets []channel.Asset, names []string) (*AssetRegister, e
 
 func main() {
 	SetLogFile("demo.log")
-	sudtOwnerLockArg, err := parseSUDTOwnerLockArg("./devnet/accounts/sudt-owner-lock-hash.txt")
-	if err != nil {
-		log.Fatalf("error getting SUDT owner lock arg: %v", err)
-	}
-	d, sudtInfo, err := deployment.GetDeployment("./devnet/contracts/migrations/dev/", "./devnet/system_scripts", sudtOwnerLockArg)
-	if err != nil {
-		log.Fatalf("error getting deployment: %v", err)
-	}
 
-	maxSudtCapacity := transaction.CalculateCellCapacity(types.CellOutput{
-		Capacity: 0,
-		Lock:     &d.DefaultLockScript,
-		Type:     sudtInfo.Script,
-	})
-	assetRegister, err := NewAssetRegister([]channel.Asset{asset.CKBAsset, &asset.SUDTAsset{
-		TypeScript:  *sudtInfo.Script,
-		MaxCapacity: maxSudtCapacity,
-	}}, []string{"CKBytes", "sudt"})
+	ckbAsset := asset.NewCKBytesAsset()
+
+	assetRegister, err := newAssetRegister([]channel.Asset{ckbAsset}, []string{"CKBytes"})
 	if err != nil {
 		log.Fatalf("error creating mapping: %v", err)
 	}
-
-	w := wallet.NewEphemeralWallet()
 
 	keyAlice, err := deployment.GetKey("./devnet/accounts/alice.pk")
 	if err != nil {
@@ -114,55 +103,60 @@ func main() {
 	aliceAccount := wallet.NewAccountFromPrivateKey(keyAlice)
 	bobAccount := wallet.NewAccountFromPrivateKey(keyBob)
 
-	err = w.AddAccount(aliceAccount)
-	if err != nil {
-		log.Fatalf("error adding alice's account: %v", err)
-	}
-	err = w.AddAccount(bobAccount)
-	if err != nil {
-		log.Fatalf("error adding bob's account: %v", err)
-	}
+	parties := []gpwallet.Address{aliceAccount.Address(), bobAccount.Address()}
 
-	// Setup clients.
+	// Create a wait group
+	var wg sync.WaitGroup
+	// Setup clients
 	log.Println("Setting up clients.")
-	alice, err := client.NewPaymentClient(
+	alice, err := client.NewWalletClient(
 		"Alice",
-		Network,
-		d,
+		network,
 		rpcNodeURL,
+		parties,
+		[]channel.Asset{ckbAsset},
+		aliceWSURL,
+		aliceCSURL,
 		aliceAccount,
-		*keyAlice,
-		w,
+		keyAlice,
 		assetRegister,
+		&wg,
 	)
 	if err != nil {
 		log.Fatalf("error creating alice's client: %v", err)
 	}
-	bob, err := client.NewPaymentClient(
+	bob, err := client.NewWalletClient(
 		"Bob",
-		Network,
-		d,
+		network,
 		rpcNodeURL,
+		parties,
+		[]channel.Asset{ckbAsset},
+		bobWSURL,
+		bobCSURL,
 		bobAccount,
-		*keyBob,
-		w,
+		keyBob,
 		assetRegister,
+		&wg,
 	)
 	if err != nil {
 		log.Fatalf("error creating bob's client: %v", err)
 	}
-	clients := []vc.DemoClient{alice, bob}
-	_ = view.RunDemo("CKB Payment Channel Demo", clients, assetRegister)
-}
+	// Handle termination signal in a separate goroutine
+	defer func() {
+		log.Println("Main process received shutdown signal")
 
-func parseSUDTOwnerLockArg(pathToSUDTOwnerLockArg string) (string, error) {
-	b, err := ioutil.ReadFile(pathToSUDTOwnerLockArg)
-	if err != nil {
-		return "", fmt.Errorf("reading sudt owner lock arg from file: %w", err)
-	}
-	sudtOwnerLockArg := string(b)
-	if sudtOwnerLockArg == "" {
-		return "", errors.New("sudt owner lock arg not found in file")
-	}
-	return sudtOwnerLockArg, nil
+		// Shutdown wallet services
+		alice.WalletServer.Shutdown(&wg)
+		bob.WalletServer.Shutdown(&wg)
+
+		// Wait for all wallet services to shut down
+		wg.Wait()
+
+		log.Println("Main process exiting")
+		os.Exit(0)
+	}()
+	time.Sleep(2 * time.Second) // Wait for clients to connect with channel service
+	clients := []vc.DemoClient{alice, bob}
+	_ = view.RunDemo("Perun Nervos Channel Service Demo", clients, assetRegister)
+
 }

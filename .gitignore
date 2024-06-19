@@ -14,7 +14,7 @@
 # log files
 *.log
 
-perun-ckb-demo
+perun-nervos-demo
 
 # Dependency directories (remove the comment below to include it)
 # vendor/

@@ -476,8 +476,8 @@ github.com/opentracing/opentracing-go v1.1.0/go.mod h1:UkNAQd3GIcIGf0SeVgPpRdFSt
 github.com/opentracing/opentracing-go v1.2.0 h1:uEJPy/1a5RIPAJ0Ov+OIO8OxWu77jEv+1B0VhjKrZUs=
 github.com/opentracing/opentracing-go v1.2.0/go.mod h1:GxEUsuufX4nBwe+T+Wl9TAgYrxe9dPLANfrWvHYVTgc=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
-github.com/perun-network/channel-service v0.0.0-20240619083331-5cd05932368d h1:0ll+MWymdG4IAmuett1mSVZJrJSVAD+2WHfiFWWooi4=
-github.com/perun-network/channel-service v0.0.0-20240619083331-5cd05932368d/go.mod h1:k/v5S6qMbKgmQ4I7oatS9MpL72pT9d9NKZP3XoBic8I=
+github.com/perun-network/channel-service v0.0.0-20240619092514-d1880c8fac75 h1:mUyVGniP0X6nYnxHfQG2anXeqM1KZ+QM61HJVbBCfn8=
+github.com/perun-network/channel-service v0.0.0-20240619092514-d1880c8fac75/go.mod h1:k/v5S6qMbKgmQ4I7oatS9MpL72pT9d9NKZP3XoBic8I=
 github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20240618093616-6d9d92aa863d h1:bKEECKN7hTIBn7+xTcTf0Z5TexlpktVcIsiRw2OpH8Y=
 github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20240618093616-6d9d92aa863d/go.mod h1:nPpBML8fuaM1NgkKCwv2gSHiCv+xKH43fu8LA9LOQUg=
 github.com/perun-network/perun-libp2p-wire v0.0.0-20240604094050-faeb97e75f3c h1:e2+S5ikuEVTVSvMhVW0Y6qPalFxi6n8DdlbsI6K4cGA=

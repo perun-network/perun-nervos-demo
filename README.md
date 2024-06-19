@@ -1,10 +1,10 @@
 <h1 align="center" style="background-color: #f0f0f0;"><br>
-    <a href="https://perun.network/"><img src=".assets/go-perun.png" alt="Perun" width="196"></a>
+    <a href="https://perun.network/"><img src=".assets/go-perun.png" alt="Perun" width="196" style="background-color: #f0f0f0;"></a>
 <br></h1>
 
 <h2 align="center">PERUN NERVOS DEMO</h2>
 
-This repository contains the CKB demo client, which utilizes the [go-perun](https://github.com/perun-network/go-perun) channel library.
+This repository demonstrates the use of the CKB Wallet clients, which interact with a [Go-Perun](https://github.com/perun-network/go-perun)'s [channel service](https://github.com/perun-network/channel-service) server to establish a payment channel.
 
 # Usage
 

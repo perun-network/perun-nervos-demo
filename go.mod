@@ -127,4 +127,4 @@ require (
 
 replace github.com/nervosnetwork/ckb-sdk-go/v2 v2.2.0 => github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20240618093616-6d9d92aa863d
 
-replace perun.network/channel-service v0.0.0 => github.com/perun-network/channel-service v0.0.0-20240619083331-5cd05932368d
+replace perun.network/channel-service v0.0.0 => github.com/perun-network/channel-service v0.0.0-20240619092514-d1880c8fac75

@@ -8,10 +8,11 @@ require (
 	github.com/perun-network/perun-libp2p-wire v0.0.0-20240604094050-faeb97e75f3c
 	github.com/stretchr/testify v1.9.0
 	google.golang.org/grpc v1.59.0
+	google.golang.org/protobuf v1.33.0
 	perun.network/channel-service v0.0.0
 	perun.network/go-perun v0.11.0
 	perun.network/perun-ckb-backend v0.0.0-20240514141411-35bdf3afa166
-	perun.network/perun-demo-tui v0.0.0-20240612133942-48e004fee36f
+	perun.network/perun-demo-tui v0.0.0-20240621081521-af8d85af0f76
 	polycry.pt/poly-go v0.0.0-20220301085937-fb9d71b45a37
 )
 
@@ -29,7 +30,7 @@ require (
 	github.com/gdamore/tcell/v2 v2.6.0 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/gopacket v1.1.17 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.1 // indirect
@@ -121,10 +122,9 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.17.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231016165738-49dd2c1f3d0b // indirect
-	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 replace github.com/nervosnetwork/ckb-sdk-go/v2 v2.2.0 => github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20240618093616-6d9d92aa863d
 
-replace perun.network/channel-service v0.0.0 => github.com/perun-network/channel-service v0.0.0-20240619092514-d1880c8fac75
+replace perun.network/channel-service v0.0.0 => github.com/perun-network/channel-service v0.0.0-20240621104817-22b8b42f7eb8

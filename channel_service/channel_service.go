@@ -18,10 +18,12 @@ import (
 	"perun.network/channel-service/rpc/proto"
 	"perun.network/channel-service/service"
 	"perun.network/channel-service/wallet"
+	"perun.network/go-perun/channel/persistence/keyvalue"
 	"perun.network/perun-ckb-backend/backend"
 	"perun.network/perun-ckb-backend/wallet/address"
 	"perun.network/perun-ckb-backend/wallet/external"
 	"perun.network/perun-nervos-demo/deployment"
+	"polycry.pt/poly-go/sortedkv/memorydb"
 )
 
 const (
@@ -121,7 +123,10 @@ func main() {
 		log.Fatalf("address resolver address does not match account address")
 	}
 
-	csA, err := service.NewChannelService(nil, wirenetA, network, rpcNodeURL, d, wireAccA.Address(), addrResolverA)
+	// PersistRestorer Alice
+	prAlice := keyvalue.NewPersistRestorer(memorydb.NewDatabase())
+
+	csA, err := service.NewChannelService(aliceWSC, wirenetA, network, rpcNodeURL, d, wireAccA.Address(), addrResolverA, prAlice)
 	if err != nil {
 		log.Fatalf("creating channel service: %v", err)
 	}
@@ -133,10 +138,13 @@ func main() {
 	}
 	go wirenetB.Bus.Listen(wirenetB.Listener)
 
-	// AddressRessolver Alice
+	// AddressRessolver Bob
 	addrResolverB := service.NewRelayServerResolver(wireAccB)
 
-	csB, err := service.NewChannelService(nil, wirenetB, network, rpcNodeURL, d, wireAccB.Address(), addrResolverB)
+	// PersistRestorer Bob
+	prBob := keyvalue.NewPersistRestorer(memorydb.NewDatabase())
+
+	csB, err := service.NewChannelService(bobWSC, wirenetB, network, rpcNodeURL, d, wireAccB.Address(), addrResolverB, prBob)
 	if err != nil {
 		log.Fatalf("creating channel service: %v", err)
 	}

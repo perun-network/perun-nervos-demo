@@ -1,13 +1,11 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"log"
 	"os"
 	"time"
 
-	"google.golang.org/protobuf/types/known/emptypb"
 	"polycry.pt/poly-go/sync"
 
 	"github.com/nervosnetwork/ckb-sdk-go/v2/types"
@@ -151,15 +149,6 @@ func main() {
 		alice.WalletServer.Shutdown(&wg)
 		bob.WalletServer.Shutdown(&wg)
 
-		// Close channel services' perun clients
-		_, err = alice.ChannelService.ClosePerunClient(context.Background(), &emptypb.Empty{})
-		if err != nil {
-			log.Printf("error closing alice's perun client: %v", err)
-		}
-		_, err = bob.ChannelService.ClosePerunClient(context.Background(), &emptypb.Empty{})
-		if err != nil {
-			log.Printf("error closing bob's perun client: %v", err)
-		}
 		// Wait for all wallet services to shut down
 		wg.Wait()
 

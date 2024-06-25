@@ -96,7 +96,7 @@ func NewWalletServiceServer(name string, acc *wallet.Account, privKey *secp256k1
 func (ws *MyWalletService) Shutdown(wg *sync.WaitGroup) {
 	defer wg.Done() // Decrease the wait group counter
 	ws.logger.Println("Shutting down wallet service...")
-	ws.server.GracefulStop()
+	ws.server.Stop()
 	ws.logger.Println("Wallet service stopped gracefully")
 }
 

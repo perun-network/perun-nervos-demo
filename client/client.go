@@ -11,6 +11,7 @@ import (
 	"github.com/nervosnetwork/ckb-sdk-go/v2/types"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"perun.network/channel-service/rpc/proto"
 	gpchannel "perun.network/go-perun/channel"
 	gpwallet "perun.network/go-perun/wallet"
@@ -323,6 +324,14 @@ func (p *WalletClient) Settle() {
 
 func (p *WalletClient) RestoreChannel() {
 	if !p.HasOpenChannel() {
+
+		// Close Perun Client on Channel Service
+		log.Println("Closing perun client")
+		_, err := p.ChannelService.ClosePerunClient(context.Background(), &emptypb.Empty{})
+		if err != nil {
+			log.Fatalf("failed to close perun client: %s", err)
+		}
+
 		// Reinit Perun Client on Channel Service
 		log.Println("Creating perun client")
 		resp, err := p.ChannelService.NewPerunClient(context.Background(), &proto.NewPerunClientRequest{})

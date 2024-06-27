@@ -26,7 +26,7 @@ import (
 )
 
 const (
-	logFile = "wallet_service_%s.log"
+	logFile = "wallet_service/wallet_service_%s.log"
 )
 
 // MyWalletService implements the wallet API.

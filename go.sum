@@ -481,12 +481,12 @@ github.com/opentracing/opentracing-go v1.1.0/go.mod h1:UkNAQd3GIcIGf0SeVgPpRdFSt
 github.com/opentracing/opentracing-go v1.2.0 h1:uEJPy/1a5RIPAJ0Ov+OIO8OxWu77jEv+1B0VhjKrZUs=
 github.com/opentracing/opentracing-go v1.2.0/go.mod h1:GxEUsuufX4nBwe+T+Wl9TAgYrxe9dPLANfrWvHYVTgc=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
-github.com/perun-network/channel-service v0.0.0-20240621104817-22b8b42f7eb8 h1:EAER0tKO/7sbixJ5zOfqyF9z1QN6RdB2v0lOwQU8np0=
-github.com/perun-network/channel-service v0.0.0-20240621104817-22b8b42f7eb8/go.mod h1:8iFKnrIfPoUzCwcH6osq6EiT9b4XcDoVfJN9LuEidGk=
+github.com/perun-network/channel-service v0.0.0-20240627093723-15f145c6c285 h1:W+AyHfr7vYkkdw1YziskV2W1lIAX9K9WFATTRMlU+aM=
+github.com/perun-network/channel-service v0.0.0-20240627093723-15f145c6c285/go.mod h1:JD7pe4Re/XBo3qrJrmX4rX92fQ/D7vy4oGaWG/rfbk4=
 github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20240618093616-6d9d92aa863d h1:bKEECKN7hTIBn7+xTcTf0Z5TexlpktVcIsiRw2OpH8Y=
 github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20240618093616-6d9d92aa863d/go.mod h1:nPpBML8fuaM1NgkKCwv2gSHiCv+xKH43fu8LA9LOQUg=
-github.com/perun-network/perun-libp2p-wire v0.0.0-20240625102324-02197591e948 h1:hVgCJX+ot+IiImEXeCxxZfFSUJYFwGWd8xncnyO3LMU=
-github.com/perun-network/perun-libp2p-wire v0.0.0-20240625102324-02197591e948/go.mod h1:kA/iWKN+2BvzxuUllMmd1IY6H2oKUZ18U+60hrY19EM=
+github.com/perun-network/perun-libp2p-wire v0.1.1 h1:4alLNHGMwmct/tOMSdpMoi3Do7tFE6t9zHwkJR6PXis=
+github.com/perun-network/perun-libp2p-wire v0.1.1/go.mod h1:kA/iWKN+2BvzxuUllMmd1IY6H2oKUZ18U+60hrY19EM=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=

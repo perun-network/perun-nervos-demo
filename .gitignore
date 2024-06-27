@@ -15,8 +15,7 @@
 *.log
 
 # database dir
-channel_service/alice-db
-channel_service/bob-db
+channel_service/*-db
 
 perun-nervos-demo
 

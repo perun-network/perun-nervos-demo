@@ -5,10 +5,8 @@ go 1.20
 require (
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.2.0
 	github.com/nervosnetwork/ckb-sdk-go/v2 v2.2.0
-	github.com/perun-network/perun-libp2p-wire v0.0.0-20240625102324-02197591e948
 	github.com/stretchr/testify v1.9.0
 	google.golang.org/grpc v1.59.0
-	google.golang.org/protobuf v1.33.0
 	perun.network/channel-service v0.0.0
 	perun.network/go-perun v0.11.0
 	perun.network/perun-ckb-backend v0.0.0-20240514141411-35bdf3afa166
@@ -95,6 +93,7 @@ require (
 	github.com/multiformats/go-multistream v0.2.0 // indirect
 	github.com/multiformats/go-varint v0.0.6 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
+	github.com/perun-network/perun-libp2p-wire v0.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/tview v0.0.0-20230621164836-6cc0565babaf // indirect
@@ -124,9 +123,10 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.17.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231016165738-49dd2c1f3d0b // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 replace github.com/nervosnetwork/ckb-sdk-go/v2 v2.2.0 => github.com/perun-network/ckb-sdk-go/v2 v2.2.1-0.20240618093616-6d9d92aa863d
 
-replace perun.network/channel-service v0.0.0 => github.com/perun-network/channel-service v0.0.0-20240621104817-22b8b42f7eb8
+replace perun.network/channel-service v0.0.0 => github.com/perun-network/channel-service v0.0.0-20240627093723-15f145c6c285

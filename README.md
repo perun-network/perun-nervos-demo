@@ -116,7 +116,7 @@ After a few seconds the transaction is confirmed on-chain and both parties were 
 Let's use Alice to send ten micropayments of 20 CKBytes per payment to Bob via their channel.
 
 ![alice-send-micropayments](./.assets/06-alice_10_micropayments_20_each.png)
-
+****
 We can observe the fact that multiple payments were issued by looking at the channels version number, which was incremented by ten, the amount of micropayments issued by Alice.
 
 ![micropayments-done](./.assets/07-alice_micropayments_done.png)
@@ -128,3 +128,32 @@ Now we use Bob to settle the channel.
 After a few seconds the channels settlement is confirmed on-chain and we can view the updated balances for Bob and Alice.
 
 ![channel-settled](./.assets/09-show_final_balances.png)
+
+
+## Restore Payment Channel
+The database is store locally in `*-db` folders.
+
+Simulate an event of channel service shut down by stopping the channel service and the demo service on the second and third terminals.
+
+Restart the channel-services' terminal again.
+
+```
+  $ cd ./channel_service
+  go run .
+```
+
+Restart Demo app.
+
+```
+./perun-nervos-demo
+```
+
+Navigate Restore the channel by selecting the `Restore Channel` button and confirm.
+
+![alice-and-bob-restore-channel](./.assets/10-alice_bob_restore.png)
+
+The old channel will be restored, identified by its ID.
+
+![alice-and-bob-restored-channel](./.assets/11-alice_bob_restore_complete.png)
+
+**Note:** If you want to restart a fresh demo, you will need to delete the database folders `*-db` in `channel_service`

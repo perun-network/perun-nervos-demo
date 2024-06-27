@@ -4,16 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"math/rand"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/decred/dcrd/dcrec/secp256k1/v4"
 	"github.com/nervosnetwork/ckb-sdk-go/v2/types"
-	"github.com/perun-network/perun-libp2p-wire/p2p"
 	"google.golang.org/grpc"
 	"perun.network/channel-service/rpc/proto"
 	"perun.network/channel-service/service"
@@ -22,6 +19,7 @@ import (
 	"perun.network/perun-ckb-backend/wallet/address"
 	"perun.network/perun-ckb-backend/wallet/external"
 	"perun.network/perun-nervos-demo/deployment"
+	"polycry.pt/poly-go/sortedkv/leveldb"
 )
 
 const (
@@ -108,35 +106,24 @@ func main() {
 	aliceWSC := setupWalletServiceClient(aliceWSSURL)
 	bobWSC := setupWalletServiceClient(bobWSSURL)
 
-	wireAccA := p2p.NewRandomAccount(rand.New(rand.NewSource(time.Now().UnixNano())))
-	wirenetA, err := p2p.NewP2PBus(wireAccA)
+	// Setup Alice
+	dbAlice, err := leveldb.LoadDatabase("./alice-db")
 	if err != nil {
-		log.Fatalf("creating p2p net: %v", err)
-	}
-	go wirenetA.Bus.Listen(wirenetA.Listener)
-
-	// AddressRessolver Alice
-	addrResolverA := service.NewRelayServerResolver(wireAccA)
-	if !addrResolverA.Address().Equal(wireAccA.Address()) {
-		log.Fatalf("address resolver address does not match account address")
+		log.Fatalf("loading database: %v", err)
 	}
 
-	csA, err := service.NewChannelService(nil, wirenetA, network, rpcNodeURL, d, wireAccA.Address(), addrResolverA)
+	csA, err := service.NewChannelService(aliceWSC, network, rpcNodeURL, d, nil, dbAlice)
 	if err != nil {
 		log.Fatalf("creating channel service: %v", err)
 	}
 
-	wireAccB := p2p.NewRandomAccount(rand.New(rand.NewSource(time.Now().UnixNano())))
-	wirenetB, err := p2p.NewP2PBus(wireAccB)
+	// Setup Bob
+	dbBob, err := leveldb.LoadDatabase("./bob-db")
 	if err != nil {
-		log.Fatalf("creating p2p net: %v", err)
+		log.Fatalf("loading database: %v", err)
 	}
-	go wirenetB.Bus.Listen(wirenetB.Listener)
 
-	// AddressRessolver Alice
-	addrResolverB := service.NewRelayServerResolver(wireAccB)
-
-	csB, err := service.NewChannelService(nil, wirenetB, network, rpcNodeURL, d, wireAccB.Address(), addrResolverB)
+	csB, err := service.NewChannelService(bobWSC, network, rpcNodeURL, d, nil, dbBob)
 	if err != nil {
 		log.Fatalf("creating channel service: %v", err)
 	}
@@ -164,6 +151,7 @@ func main() {
 	// Channel to notify when servers are stopped
 	done := make(chan bool, 1)
 
+	// Handle termination signal in a separate goroutine
 	go func() {
 		<-sigs
 		fmt.Println("Shutting down gRPC servers...")
@@ -178,7 +166,7 @@ func main() {
 
 	// Start the servers
 	go func() {
-		fmt.Printf("Starting Alice Channel Service Server at %s\n", hostA)
+		fmt.Printf("Starting Alice Channel Service Server at %s \n", hostA)
 		err = sA.Serve(lisA)
 		if err != nil {
 			log.Fatalf("serving channel service: %v", err)
@@ -186,7 +174,7 @@ func main() {
 	}()
 
 	go func() {
-		fmt.Printf("Starting Bob Channel Service Server at %s\n", hostB)
+		fmt.Printf("Starting Bob Channel Service Server at %s \n", hostB)
 		err = sB.Serve(lisB)
 		if err != nil {
 			log.Fatalf("serving channel service: %v", err)

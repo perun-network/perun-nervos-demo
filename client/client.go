@@ -37,7 +37,7 @@ type WalletClient struct {
 	Network       types.Network
 	assetRegister asset2.Register
 
-	channelService proto.ChannelServiceClient
+	ChannelService proto.ChannelServiceClient
 	WalletServer   *wallet_service.MyWalletService
 	walletService  proto.WalletServiceClient
 
@@ -97,9 +97,10 @@ func NewWalletClient(
 		rpcClient:      balanceRPC,
 		walletService:  wsc,
 		WalletServer:   wss,
-		channelService: csc,
+		ChannelService: csc,
 	}
 	wss.SetOnUpdate(p.NotifyAllState)
+
 	go p.PollBalances()
 	return p, nil
 }
@@ -238,7 +239,7 @@ func (p *WalletClient) OpenChannel(peer gpwallet.Address, amounts map[gpchannel.
 	}
 
 	// Use channel service to send proposal
-	resp, err := p.channelService.OpenChannel(context.Background(), openChannelRequest)
+	resp, err := p.ChannelService.OpenChannel(context.Background(), openChannelRequest)
 	if err != nil {
 		log.Fatalf("Failed to open channel: %v", err)
 	}
@@ -253,6 +254,7 @@ func (p *WalletClient) OpenChannel(peer gpwallet.Address, amounts map[gpchannel.
 }
 
 func (p *WalletClient) SendPaymentToPeer(amounts map[gpchannel.Asset]float64) {
+	log.Println("SendPaymentToPeer called")
 	if !p.HasOpenChannel() {
 		return
 	}
@@ -283,7 +285,8 @@ func (p *WalletClient) SendPaymentToPeer(amounts map[gpchannel.Asset]float64) {
 		State: protoUpdate,
 	}
 
-	resp, err := p.channelService.UpdateChannel(context.Background(), updateChannelRequest)
+	log.Println("Sending payment to peer")
+	resp, err := p.ChannelService.UpdateChannel(context.Background(), updateChannelRequest)
 	if err != nil {
 		log.Fatalf("Failed to update channel: %v", err)
 	}
@@ -296,6 +299,7 @@ func (p *WalletClient) SendPaymentToPeer(amounts map[gpchannel.Asset]float64) {
 }
 
 func (p *WalletClient) Settle() {
+	log.Println("Settle called")
 	if !p.HasOpenChannel() {
 		return
 	}
@@ -304,7 +308,7 @@ func (p *WalletClient) Settle() {
 		ChannelId: p.Channel.State().ID[:],
 	}
 
-	resp, err := p.channelService.CloseChannel(context.Background(), closeChannelRequest)
+	resp, err := p.ChannelService.CloseChannel(context.Background(), closeChannelRequest)
 	if err != nil {
 		log.Fatalf("Failed to close channel: %v", err)
 	}
@@ -318,8 +322,38 @@ func (p *WalletClient) Settle() {
 }
 
 func (p *WalletClient) RestoreChannel() {
-	if p.HasOpenChannel() {
+	if !p.HasOpenChannel() {
+
+		// Close Perun Client on Channel Service
+		log.Println("Closing perun client")
+		_, err := p.ChannelService.ClosePerunClient(context.Background(), &proto.ClosePerunClientRequest{})
+		if err != nil {
+			log.Fatalf("failed to close perun client: %s", err)
+		}
+
+		// Reinit Perun Client on Channel Service
+		log.Println("Creating perun client")
+		resp, err := p.ChannelService.NewPerunClient(context.Background(), &proto.NewPerunClientRequest{})
+		if err != nil {
+			log.Fatalf("failed to create perun client: %s", err)
+		}
+
+		if !resp.Accepted {
+			log.Fatalf("perun client creation rejected")
+		}
+
 		log.Println("Restoring channel")
+		// Restore the channel
+		resp2, err := p.ChannelService.RestoreChannels(context.Background(), &proto.RestoreChannelsRequest{})
+		if err != nil {
+			log.Fatalf("Failed to restore channel: %v", err)
+		}
+
+		if !resp2.Accepted {
+			log.Fatalf("Channel restore request was rejected")
+		}
+		log.Println("Channel restored")
+
 		return
 	}
 	log.Println("Channel is already online")
